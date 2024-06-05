@@ -5,14 +5,9 @@ export interface ISevas extends mongoose.Document {
     _id: string;
     id: string;
 
-    name: string;
-    phoneNumber: number;
     sevaName: string;
-    peopleCount: number;
-    price: number;
-    totalAmount: number;
-    duration: string;
     sevaId: number;
+    isSpecialSeva: boolean;
 
     __ref: string;
     createdAt: Date;
@@ -21,14 +16,9 @@ export interface ISevas extends mongoose.Document {
 
 export var ISevaSchema = new mongoose.Schema({
 
-    name: { type: String },
-    phoneNumber: { type: Number },
     sevaName: { type: String },
-    peopleCount: { type: Number },
-    price: { type: Number },
-    totalAmount: { type: Number },
-    duration: { type: String },
     sevaId: { type: Number },
+    isSpecialSeva: { type: Boolean },
 
     // db defaults
     _id: { type: String, default: RandomNumberGenerator.getUniqueId },

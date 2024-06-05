@@ -1,27 +1,28 @@
 import { RequestContext } from "@skillmine-dev-public/auth-utils";
 import { ErrorEntity, HttpStatus } from "@skillmine-dev-public/response-util";
 import { DbContext } from "../../../database/DBContext";
-import { ISevas } from "../model/collections/Sevas";
+import { ISubSevas } from "../model/collections/SubSevas";
 
 
-export class SevaService {
-    private static _instance: SevaService;
+
+export class SubSevaService {
+    private static _instance: SubSevaService;
     static get Instance() {
         if (!this._instance) {
-            this._instance = new SevaService();
+            this._instance = new SubSevaService();
         }
         return this._instance;
     }
 
     /**
-     * Create New ContactUs
+     * Create New SubSeva
      */
-    async createNewSeva( sevas: ISevas): Promise<ISevas> {
+    async createNewSubSeva( subSevas: ISubSevas): Promise<ISubSevas> {
         try {
             const dbContext = await DbContext.getContextByConfig();
-            const newSeva = new dbContext.Sevas();
-            Object.assign(newSeva, <ISevas>sevas);
-            let saved = await newSeva.save();
+            const newSubSeva = new dbContext.SubSevas();
+            Object.assign(newSubSeva, <ISubSevas>subSevas);
+            let saved = await newSubSeva.save();
             return Promise.resolve(saved);
         }
         catch (error) {
@@ -29,14 +30,14 @@ export class SevaService {
         }
     }
 
-    async getSevaByID(seva_id: string): Promise<ISevas> {
+    async getSubSevaByID(subSevaId: string) {
         try {
             const dbContext = await DbContext.getContextByConfig();
-            const savedSevas = await dbContext.Sevas.findOne({ _id: seva_id });
-            if (!savedSevas) {
+            const savedSubSevas = await dbContext.SubSevas.find({ _id: subSevaId });
+            if (!savedSubSevas) {
                 throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
             }
-            return Promise.resolve(savedSevas);
+            return Promise.resolve(savedSubSevas);
         }
         catch (error) {
             return Promise.reject(error);
@@ -44,17 +45,16 @@ export class SevaService {
     }
 
     /**
-    * Get All Sevas
+    * Get All Sub Sevas
     */
-    async getAllSevas() {
+    async getAllSubSevas(parentSevaRef: string) {
         try {
             const dbContext = await DbContext.getContextByConfig();
-            const savedSevas = await dbContext.Sevas.find({});
-            console.log("savedSevas",savedSevas)
-            if (!savedSevas) {
+            const savedSubSevas = await dbContext.SubSevas.find({parentSevaRef: parentSevaRef});
+            if (!savedSubSevas) {
                 throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
             }
-            return Promise.resolve(savedSevas);
+            return Promise.resolve(savedSubSevas);
         }
         catch (error) {
             return Promise.reject(error);

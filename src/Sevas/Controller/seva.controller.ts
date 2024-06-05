@@ -34,18 +34,23 @@ export class SevasContorller {
         }
     }
 
-    /**
-     * Get All ContactUs
-     */
     @Get("/")
     async getAllSevas(@Response() res) {
         try {
             const result = await SevaService.Instance.getAllSevas();
-            return res.status(200).json({ data: result });
+            if (result) {
+                return res.status(200).json({ data: result });
+            } else {
+                return res.status(404).json({ error: 'Seva not found' });
+            }
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
     }
+
+   
+
+
 
 
 
