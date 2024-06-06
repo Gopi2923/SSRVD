@@ -49,10 +49,32 @@ export class SevaService {
     async getAllSevas() {
         try {
             const dbContext = await DbContext.getContextByConfig();
-            const savedSevas = await dbContext.Sevas.find({});
-            console.log("savedSevas",savedSevas)
+            const today = new Date();
+            const dayOfWeek = today.toLocaleString('en-US', { weekday: 'long' });
+            const savedSevas = await dbContext.Sevas.aggregate([
+                {
+                    $lookup: {
+                        from: "SubSevas",
+                        let: { parentSevaRef: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            { $eq: ["$parentSevaRef", "$$parentSevaRef"] },
+                                            { $eq: ["$isSpecialParentSeva", true] },
+                                            { $eq: ["$specialSevaDay", dayOfWeek] },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: "SubSevas",
+                    },
+                },
+            ])
             if (!savedSevas) {
-                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
+                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found" });
             }
             return Promise.resolve(savedSevas);
         }
