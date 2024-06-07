@@ -16,7 +16,8 @@ export interface IUserReciept extends mongoose.Document {
     slot: string;
     availableTickects: number;
     totalAmount: number;
-
+    name: string;
+    phoneNumber: number;
 
     __ref: string;
     createdAt: Date;
@@ -36,7 +37,9 @@ export var IUserRecieptSchema = new mongoose.Schema({
     slot: { type: String },
     availableTickects: { type: Number },
     totalAmount: { type: Number },
-
+    name: { type: String },
+    phoneNumber: { type: Number },
+    
     // db defaults
     _id: { type: String, default: RandomNumberGenerator.getUniqueId },
     __ref: { type: String, index: true },

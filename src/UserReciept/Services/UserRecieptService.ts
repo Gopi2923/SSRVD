@@ -23,10 +23,12 @@ export class UserRecieptService {
             const newUserReciept = new dbContext.UserReciept();
             Object.assign(newUserReciept, <IUserReciept>userReciept);
             let saved = await newUserReciept.save();
-            let specialSevaCount = await dbContext.SubSevas.findOne({ _id: saved.subSevaref });
-            if (specialSevaCount.specialSevaAvailableCount != 0) {
-                let count = specialSevaCount.specialSevaAvailableCount - userReciept.numberOfTickets;
-                let updateCount = await dbContext.SubSevas.updateOne({ _id: saved.subSevaref }, { $set: {specialSevaAvailableCount: count} });
+            let specialSevaCount = await dbContext.SubSevas.findOne({ _id: saved.subSevaref, isSpecialParentSeva: true });
+            if(specialSevaCount){
+                if (specialSevaCount.specialSevaAvailableCount != 0) {
+                    let count = specialSevaCount.specialSevaAvailableCount - userReciept.numberOfTickets;
+                    let updateCount = await dbContext.SubSevas.updateOne({ _id: saved.subSevaref }, { $set: { specialSevaAvailableCount: count } });
+                }
             }
             return Promise.resolve(saved);
         }
