@@ -5,6 +5,9 @@ const cors = require("cors");
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(3501);
-  await app.use(cors({ origin: "*" }));
+  await app.use(cors({
+    origin: "*", methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  }));
 }
 bootstrap();
