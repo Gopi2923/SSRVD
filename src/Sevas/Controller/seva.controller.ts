@@ -1,4 +1,4 @@
-import { Controller, Post, Response, Body, Param, Get, Delete } from "@nestjs/common";
+import { Controller, Post, Response, Body, Param, Get, Delete, Query, HttpException, HttpStatus } from "@nestjs/common";
 import { ResultEntity } from '@skillmine-dev-public/response-util';
 import { SevaService } from "../services/SevaService";
 import { ISevas } from "../model/collections/Sevas";
@@ -35,16 +35,15 @@ export class SevasContorller {
     }
 
     @Get("/")
-    async getAllSevas(@Response() res) {
+    async getAllSevas(@Query("getServices") getServices:boolean) {
         try {
-            const result = await SevaService.Instance.getAllSevas();
-            if (result) {
-                return res.status(200).json({ data: result });
-            } else {
-                return res.status(404).json({ error: 'Seva not found' });
-            }
+            const result = await SevaService.Instance.getAllSevas(getServices);
+            return   result;
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            throw new HttpException({
+                success: false,
+                error: 'Failed to get all Sevas'
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

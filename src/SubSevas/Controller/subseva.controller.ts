@@ -1,4 +1,4 @@
-import { Controller, Post, Response, Body, Param, Get, Delete, Query } from "@nestjs/common";
+import { Controller, Post, Response, Body, Param, Get, Delete, Query, HttpException, HttpStatus } from "@nestjs/common";
 import { ResultEntity } from '@skillmine-dev-public/response-util';
 import { ISubSevas } from "../model/collections/SubSevas";
 import { SubSevaService } from "../Services/SubSevaSurvice";
@@ -34,17 +34,30 @@ export class SubSevasContorller {
         }
     }
 
-    @Get("/allSubsevas/:parentSevaRef")
-    async getAllSevas(@Response() res, @Param("parentSevaRef") parentSevaRef:string) {
+    // @Get("/allSubsevas/:parentSevaRef")
+    // async getAllSevas(@Response() res, @Param("parentSevaRef") parentSevaRef:string) {
+    //     try {
+    //         const result = await SubSevaService.Instance.getAllSubSevas(parentSevaRef);
+    //         if (result) {
+    //             return res.status(200).json({ data: result });
+    //         } else {
+    //             return res.status(404).json({ error: 'Sub Seva not found' });
+    //         }
+    //     } catch (error) {
+    //         return res.status(500).json({ error: "Sub seva not found" });
+    //     }
+    // }
+
+    @Get("/")
+    async getAllSubSevas(@Query("getsubServices") getsubServices: boolean, @Query("seva_type") seva_type: number) {
         try {
-            const result = await SubSevaService.Instance.getAllSubSevas(parentSevaRef);
-            if (result) {
-                return res.status(200).json({ data: result });
-            } else {
-                return res.status(404).json({ error: 'Sub Seva not found' });
-            }
+            const result = await SubSevaService.Instance.getAllSubSevas(getsubServices,seva_type);
+            return result;
         } catch (error) {
-            return res.status(500).json({ error: "Sub seva not found" });
+            throw new HttpException({
+                success: false,
+                error: 'Failed to get all SubSevas'
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

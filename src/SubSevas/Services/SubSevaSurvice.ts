@@ -2,6 +2,8 @@ import { RequestContext } from "@skillmine-dev-public/auth-utils";
 import { ErrorEntity, HttpStatus } from "@skillmine-dev-public/response-util";
 import { DbContext } from "../../../database/DBContext";
 import { ISubSevas } from "../model/collections/SubSevas";
+import axios from "axios";
+import { HttpException } from "@nestjs/common";
 
 
 
@@ -47,20 +49,40 @@ export class SubSevaService {
     /**
     * Get All Sub Sevas
     */
-    async getAllSubSevas(parentSevaRef: string) {
+    async getAllSubSevas(getsubServices: boolean, seva_type: number) {
         try {
-            const dbContext = await DbContext.getContextByConfig();
-            const savedSubSevas = await dbContext.SubSevas.find({parentSevaRef: parentSevaRef});
-            if (!savedSubSevas) {
-                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
+            let body = {
+                "getsubServices": getsubServices,
+                "seva_type": seva_type
+
+               
             }
-            return Promise.resolve(savedSubSevas);
-        }
-        catch (error) {
-            return Promise.reject(error);
+            let url = "https://bhadradritemple.telangana.gov.in/apis/api.php";
+            let method = "GET";
+            let headers = {
+                'Apikey': 'a9e0f8a33497dbe0de8ea0e154d2a090',
+                'Content-Type': 'application/json',
+                'Ver': '1.0'
+            };
+            const axiosConfig = {
+                headers: headers,
+                method: method,
+                url: url,
+                data: body
+
+            };
+
+            const savedSubSevas = await axios(axiosConfig);
+            console.log("savedSevas",savedSubSevas.data)
+            return savedSubSevas.data;
+            
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException('Failed to get all SubSevas', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 
