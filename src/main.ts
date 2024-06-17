@@ -5,11 +5,13 @@ const cors = require("cors");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3501);
-  app.useGlobalFilters(new HttpExceptionFilter());
-  await app.use(cors({
-    origin: "*", methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  app.use(cors({
+    origin: "*",
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   }));
+  app.useGlobalFilters(new HttpExceptionFilter());
+  await app.listen(3501);
 }
+
 bootstrap();
