@@ -37,7 +37,7 @@ export class PaymentGatewayService {
             }
 
             let order = await this.createRazorpayOrder(instance, query);
-            console.log("order",order)
+            console.log("order", order)
 
             const newOrder = new dbContext.PaymentGateway();
             newOrder.order_ref = order.id;
@@ -75,49 +75,49 @@ export class PaymentGatewayService {
         }
     }
 
-    
+
     async verifyTheStatus(verifiction_status: IPaymentGateway) {
         try {
             const dbContext = await DbContext.getContextByConfig();
 
             let body = verifiction_status.razorpay_order_id + "|" + verifiction_status.razorpay_payment_id;
             var expectedSignature = crypto.createHmac('sha256', process.env.key_secret)
-            .update(body.toString())
-            .digest('hex');
+                .update(body.toString())
+                .digest('hex');
 
-        var response = { "signatureIsValid": "false" }
-        if (expectedSignature === verifiction_status.razorpay_signature) {
-            response = { "signatureIsValid": "true" }
-        }
+            var response = { "signatureIsValid": "false" }
+            if (expectedSignature === verifiction_status.razorpay_signature) {
+                response = { "signatureIsValid": "true" }
+            }
 
-        if (response.signatureIsValid == "true") {
-            let savedpaymentDetails = await dbContext.PaymentGateway.findOne({
-                "order_ref": verifiction_status.razorpay_order_id
-            });
-            if (savedpaymentDetails) {
-                savedpaymentDetails.is_verified = response.signatureIsValid === 'true';
-                savedpaymentDetails.razorpay_order_id = verifiction_status.razorpay_order_id;
-                savedpaymentDetails.razorpay_payment_id = verifiction_status.razorpay_payment_id;
-                savedpaymentDetails.razorpay_signature = verifiction_status.razorpay_signature;
-                savedpaymentDetails.razorypay_sig_received = verifiction_status.razorpay_signature;
-                savedpaymentDetails.razorypay_sig_generated = expectedSignature;
-                let api_key = {
-                    "key_id": process.env.key_id,
-                    "key_secret": process.env.key_secret
-                }
-
-                var order_instance = new Razorpay(api_key);
-                await order_instance.orders.fetch(verifiction_status.razorpay_order_id, async function (error, Order) {
-                    let savedpaymentDetails = await dbContext.PaymentGateway.findOne({
-                        "order_ref": verifiction_status.razorpay_order_id
-                    });
-                    if (savedpaymentDetails) {
-                        savedpaymentDetails.status = order_instance.status;
-                        savedpaymentDetails.attempts = order_instance.attempts
-                    }
+            if (response.signatureIsValid == "true") {
+                let savedpaymentDetails = await dbContext.PaymentGateway.findOne({
+                    "order_ref": verifiction_status.razorpay_order_id
                 });
-                let result = await savedpaymentDetails.save();
-                return result;
+                if (savedpaymentDetails) {
+                    savedpaymentDetails.is_verified = response.signatureIsValid === 'true';
+                    savedpaymentDetails.razorpay_order_id = verifiction_status.razorpay_order_id;
+                    savedpaymentDetails.razorpay_payment_id = verifiction_status.razorpay_payment_id;
+                    savedpaymentDetails.razorpay_signature = verifiction_status.razorpay_signature;
+                    savedpaymentDetails.razorypay_sig_received = verifiction_status.razorpay_signature;
+                    savedpaymentDetails.razorypay_sig_generated = expectedSignature;
+                    let api_key = {
+                        "key_id": process.env.key_id,
+                        "key_secret": process.env.key_secret
+                    }
+
+                    var order_instance = new Razorpay(api_key);
+                    await order_instance.orders.fetch(verifiction_status.razorpay_order_id, async function (error, Order) {
+                        let savedpaymentDetails = await dbContext.PaymentGateway.findOne({
+                            "order_ref": verifiction_status.razorpay_order_id
+                        });
+                        if (savedpaymentDetails) {
+                            savedpaymentDetails.status = order_instance.status;
+                            savedpaymentDetails.attempts = order_instance.attempts
+                        }
+                    });
+                    let result = await savedpaymentDetails.save();
+                    return result;
 
                 }
             }
