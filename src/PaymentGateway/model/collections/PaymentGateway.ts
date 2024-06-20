@@ -1,9 +1,9 @@
 import mongoose = require("mongoose");
 import { RandomNumberGenerator } from "@skillmine-dev-public/random-id-generator-util";
 
-export interface IPaymentGateway extends mongoose.Document{
-    _id:string;
-    id:string;
+export interface IPaymentGateway extends mongoose.Document {
+    _id: string;
+    id: string;
 
     order_ref: string;
     entity: string;
@@ -17,9 +17,9 @@ export interface IPaymentGateway extends mongoose.Document{
 
     offer_id: string;
     status: string;
-    
-    attempts : number;
-    notes:  any;
+
+    attempts: number;
+    notes: any;
 
     verifiction_status: string;
     is_verified: boolean;
@@ -42,7 +42,7 @@ export var IPaymentGatewayScheme = new mongoose.Schema({
 
     amount: { type: Number },
     amount_paid: { type: Number },
-    amount_due:{ type: Number },
+    amount_due: { type: Number },
     public_note: { type: String },
     currency: { type: String },
     receipt: { type: String },
@@ -52,8 +52,8 @@ export var IPaymentGatewayScheme = new mongoose.Schema({
     entity_id: { type: String },
     settlement_id: { type: String },
 
-    attempts : { type: Number },
-    notes:  { type: Object },
+    attempts: { type: Number },
+    notes: { type: Object },
 
     verifiction_status: { type: String },
     is_verified: { type: Boolean, default: false },
@@ -69,18 +69,18 @@ export var IPaymentGatewayScheme = new mongoose.Schema({
     // db defaults
     _id: { type: String, default: RandomNumberGenerator.getUniqueId },
     __ref: { type: String, index: true },
-},{
-    toObject :{ virtuals: true},
-    toJSON: { virtuals: true},
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
     timestamps: true
 });
 
-IPaymentGatewayScheme.pre('save', function(next){
+IPaymentGatewayScheme.pre('save', function (next) {
     const now = new Date();
     const document = <IPaymentGateway>this;
-    if(!document._id){
+    if (!document._id) {
         document.id = document._id = RandomNumberGenerator.getUniqueId();
-    } 
+    }
     document.updatedAt = now;
     if (!document.createdAt) {
         document.createdAt = now;
