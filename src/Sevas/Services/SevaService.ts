@@ -17,7 +17,7 @@ export class SevaService {
     /**
      * Create New ContactUs
      */
-    async createNewSeva( sevas: ISevas): Promise<ISevas> {
+    async createNewSeva(sevas: ISevas): Promise<ISevas> {
         try {
             const dbContext = await DbContext.getContextByConfig();
             const newSeva = new dbContext.Sevas();
@@ -35,7 +35,7 @@ export class SevaService {
             const dbContext = await DbContext.getContextByConfig();
             const savedSevas = await dbContext.Sevas.findOne({ _id: seva_id });
             if (!savedSevas) {
-                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
+                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found" });
             }
             return Promise.resolve(savedSevas);
         }
@@ -52,7 +52,7 @@ export class SevaService {
             const dbContext = await DbContext.getContextByConfig();
             let body = {
                 "getServices": getServices,
-               
+
             }
             let url = "https://bhadradritemple.telangana.gov.in/apis/api.php";
             let method = "GET";
@@ -70,7 +70,7 @@ export class SevaService {
             };
 
             const savedSevas = await axios(axiosConfig);
-           
+
             return savedSevas.data;
         } catch (error) {
             if (error instanceof HttpException) {
@@ -85,6 +85,6 @@ export class SevaService {
 
 
 
-   
+
 
 }
