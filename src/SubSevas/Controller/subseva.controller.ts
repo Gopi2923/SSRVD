@@ -5,8 +5,8 @@ import { SubSevaService } from "../Services/SubSevaSurvice";
 
 @Controller('sub-sevas')
 export class SubSevasContorller {
-   
-    
+
+
     @Post("/createSubSevas")
     async createNewSeva(@Response() res, @Body() body: ISubSevas) {
         try {
@@ -51,7 +51,7 @@ export class SubSevasContorller {
     @Get("/")
     async getAllSubSevas(@Query("getsubServices") getsubServices: boolean, @Query("seva_type") seva_type: number) {
         try {
-            const result = await SubSevaService.Instance.getAllSubSevas(getsubServices,seva_type);
+            const result = await SubSevaService.Instance.getAllSubSevas(getsubServices, seva_type);
             return result;
         } catch (error) {
             throw new HttpException({
@@ -61,7 +61,7 @@ export class SubSevasContorller {
         }
     }
 
-   
+
 
 
 
