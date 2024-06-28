@@ -19,7 +19,7 @@ export class SubSevaService {
     /**
      * Create New SubSeva
      */
-    async createNewSubSeva( subSevas: ISubSevas): Promise<ISubSevas> {
+    async createNewSubSeva(subSevas: ISubSevas): Promise<ISubSevas> {
         try {
             const dbContext = await DbContext.getContextByConfig();
             const newSubSeva = new dbContext.SubSevas();
@@ -37,7 +37,7 @@ export class SubSevaService {
             const dbContext = await DbContext.getContextByConfig();
             const savedSubSevas = await dbContext.SubSevas.find({ _id: subSevaId });
             if (!savedSubSevas) {
-                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found"  });
+                throw new ErrorEntity({ http_code: HttpStatus.CONFLICT, error: "Not found", error_description: "Seva Not found" });
             }
             return Promise.resolve(savedSubSevas);
         }
@@ -55,7 +55,7 @@ export class SubSevaService {
                 "getsubServices": getsubServices,
                 "seva_type": seva_type
 
-               
+
             }
             let url = "https://bhadradritemple.telangana.gov.in/apis/api.php";
             let method = "GET";
@@ -74,7 +74,7 @@ export class SubSevaService {
 
             const savedSubSevas = await axios(axiosConfig);
             return savedSubSevas.data;
-            
+
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -87,6 +87,6 @@ export class SubSevaService {
 
 
 
-   
+
 
 }
