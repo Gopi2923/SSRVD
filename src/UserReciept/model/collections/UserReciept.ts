@@ -39,7 +39,7 @@ export var IUserRecieptSchema = new mongoose.Schema({
     totalAmount: { type: Number },
     name: { type: String },
     phoneNumber: { type: Number },
-    
+
     // db defaults
     _id: { type: String, default: RandomNumberGenerator.getUniqueId },
     __ref: { type: String, index: true },
